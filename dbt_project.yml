@@ -1,0 +1,44 @@
+name: carrier_cost_reconciliation
+version: "1.0.0"
+config-version: 2
+profile: carrier_cost_reconciliation
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+
+models:
+  carrier_cost_reconciliation:
+    staging:
+      +materialized: view
+      +tags: ["silver"]
+    intermediate:
+      +materialized: view
+      +tags: ["silver"]
+    marts:
+      +materialized: table
+      +tags: ["gold"]
+
+seeds:
+  carrier_cost_reconciliation:
+    +tags: ["bronze"]
+    deliveries:
+      +column_types:
+        delivery_id: varchar
+        store_id: varchar
+        carrier_id: varchar
+        delivery_date: varchar
+    store_cost_totals:
+      +column_types:
+        store_id: varchar
+        month: varchar
+        controlling_total_cost: decimal(18,2)
+    carrier_contracts:
+      +column_types:
+        carrier_id: varchar
+        store_id: varchar
+        contract_start_date: varchar
+    carriers:
+      +column_types:
+        carrier_id: varchar
+        carrier_name: varchar

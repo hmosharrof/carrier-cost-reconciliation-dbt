@@ -1,0 +1,7 @@
+carrier_cost_reconciliation:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: carrier_cost.duckdb
+      threads: 1

@@ -1,0 +1,59 @@
+version: 2
+
+seeds:
+  - name: carriers
+    description: "Carrier master data (synthetic)."
+    columns:
+      - name: carrier_id
+        tests: [unique, not_null]
+  - name: deliveries
+    description: "Raw delivery events (synthetic). One row per delivery."
+    columns:
+      - name: delivery_id
+        tests: [unique, not_null]
+      - name: carrier_id
+        tests:
+          - relationships:
+              to: ref('carriers')
+              field: carrier_id
+  - name: store_cost_totals
+    description: "Total logistics cost per store and month as booked by Controlling (synthetic)."
+  - name: carrier_contracts
+    description: "Contract start date per carrier and store (synthetic)."
+
+models:
+  - name: stg_deliveries
+    description: "Deliveries with the reporting month derived from the delivery date."
+    columns:
+      - name: delivery_id
+        tests: [unique, not_null]
+      - name: month
+        tests: [not_null]
+  - name: stg_store_cost_totals
+    description: "Controlling's total logistics cost per store and month."
+  - name: stg_carrier_contracts
+    description: "Carrier contract start dates per store."
+  - name: int_carrier_delivery_share
+    description: "Share of each carrier in a store's monthly deliveries. The allocation key."
+    columns:
+      - name: delivery_share
+        tests: [not_null]
+  - name: fct_carrier_cost_allocation
+    description: "Monthly store cost allocated to carriers by delivery share."
+    columns:
+      - name: allocated_cost
+        tests: [not_null]
+      - name: carrier_id
+        tests:
+          - relationships:
+              to: ref('carriers')
+              field: carrier_id
+  - name: fct_allocation_method_comparison
+    description: "Old start-date rule versus delivery-share rule, per carrier."
+  - name: fct_reconciliation_check
+    description: "Controlling total versus the sum of allocated costs, per store and month."
+    columns:
+      - name: is_reconciled
+        tests:
+          - accepted_values:
+              values: [0, 1]
