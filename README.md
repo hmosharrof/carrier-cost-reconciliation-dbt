@@ -54,6 +54,8 @@ dbt docs generate --profiles-dir . && dbt docs serve --profiles-dir .   # lineag
 Use Python 3.10 to 3.12. The synthetic seeds can be regenerated with `python scripts/generate_seeds.py`.
 A GitHub Actions workflow (`.github/workflows/ci.yml`) runs `dbt build` on every push.
 
+![dbt build](https://github.com/hmosharrof/carrier-cost-reconciliation-dbt/actions/workflows/ci.yml/badge.svg)
+
 ## Notes and limits
 
 - Synthetic data, small scale, DuckDB for convenience. It demonstrates modelling, testing and documentation
